@@ -1,0 +1,29 @@
+{
+  "name": "employee-task-ms-be",
+  "version": "1.0.0",
+  "description": "Back end of the Employee task Management System",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/techinika/employee-task-ms-be.git"
+  },
+  "author": "Aime Bruce",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/techinika/employee-task-ms-be/issues"
+  },
+  "homepage": "https://github.com/techinika/employee-task-ms-be#readme",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.20.2",
+    "express": "^4.18.2",
+    "hbs": "^4.2.0",
+    "mysql": "^2.18.1",
+    "nodemon": "^2.0.22"
+  }
+}
