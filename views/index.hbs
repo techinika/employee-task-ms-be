@@ -12,7 +12,9 @@
         <div class="container">
             <h2 class="log">Login</h2>
             <img src="./imgs/cancel.png" alt="" class="close">
-            
+            {{#if message}}
+            <div>{{message}}</div>
+            {{/if}}
             <form action="/auth/login" method="post">
                 <input type="text" class="username"  name="username" placeholder="Username" required="required">
                 <input type="password" class="password"  name="password" placeholder="Password" required="required">
