@@ -1,5 +1,21 @@
+const mysql = require("mysql");
+
+//Creating connection
+const conn = mysql.createConnection({
+    host: "localhost",
+    user: "root",
+    password: "",
+    database: "login_signup"
+})
+
+// Connecting to database
+conn.connect((err) => {
+    if(err) console.log(err, "Connection failed...");
+    console.log("Conneted to database successfully...");
+});
+
 const home = (req,res) => {
-    res.send("Welcome admin this will contain all lists of employees");
+    res.render("admin/adm_home");
 }
 const projects = (req,res) => {
     res.send("Welcome to projects");
@@ -14,10 +30,42 @@ const settings = (req,res) => {
     res.send("Welcome to settings");
 }
 
+const add_task = (req, res) => {
+    let title = req.body.title;
+    let description = req.body.description;
+    let deadline = req.body.deadline;
+    let assignee = req.body.assignee;
+    conn.query(`SELECT id FROM users WHERE username= '${assignee}'`, (err, result) => {
+        if(err){
+            console.log(err)
+            res.render("admin/adm_home")
+        }else if(result < 1){
+            console.log("User not found");
+            res.render("admin/adm_home", {
+                message: "user not found"
+            })
+        }else{
+            let user_id = result[0]
+            console.log(user_id.id);
+            // let newtask = {title: `${title}`, description: `${description}`, deadline:`${deadline}`,dep_id:`${dep_id}`};
+            let sql = `INSERT INTO tasks (title, description, deadline, user_id) values ('${title}', '${description}', '${deadline}', '${dep_id.id}')`
+            conn.query(sql, (err, result) => {
+                if(err){
+                    console.log(err);
+                    console.log(req.body);
+                }else{
+                    res.send("Task added");
+                }
+            })
+        }
+    })
+}
+
 module.exports = {
     home,
     projects,
     reports,
     tasks,
-    settings
+    settings,
+    add_task
 }
