@@ -1,17 +1,23 @@
+// Getting libraries and external functions or variables
 const express = require("express");
 const { 
-    home,
+    unfinished,
+    finished,
     notifications,
-    participants,
-    settings
+    all_participants,
+    dep_participants,
+    settings,
 } = require("../controllers/employee");
 
-// const { auth } = require("../controllers/auth");
 const router = express.Router();
 
-router.route("/home/:id").get(home);
+// Defining routes on ems/
+router.route("/home/unfinished/:id").get(unfinished);
+router.route("/home/finished/:id").get(finished)
 router.route("/notifications").get(notifications);
-router.route("/participants").get(participants);
-router.route("/settings").get(settings);
+router.route("/participants").get(all_participants);
+router.route("/participants/:id").get(dep_participants);
+router.route("/settings").put(settings);
 
+// Exporting area
 module.exports = router;

@@ -1,13 +1,13 @@
 const express = require("express");
 const app = express();
+const cors = require("cors")
 const path = require("path");
 const bodyParser = require("body-parser");
 
-const public = path.join(__dirname, "./public");
-app.use(express.static(public));
 // Using a body parser 
 app.use(bodyParser.urlencoded({ extended : true}))
 app.use(bodyParser.json())
+app.use(cors())
 
 // Basic routing
 app.get("/", (req, res) => {

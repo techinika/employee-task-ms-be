@@ -48,7 +48,6 @@ const add_task = (req, res) => {
         }else{
             let user_id = result[0]
             console.log(user_id.id);
-            // let newtask = {title: `${title}`, description: `${description}`, deadline:`${deadline}`,dep_id:`${dep_id}`};
             let sql = `INSERT INTO tasks (title, description, deadline, status, user_id) values ('${title}', '${description}', '${deadline}', '${status}', '${dep_id.id}')`
             conn.query(sql, (err, result) => {
                 if(err){

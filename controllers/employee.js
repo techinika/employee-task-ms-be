@@ -16,34 +16,61 @@ conn.connect((err) => {
 });
 
 // Endpoints functions after /emp
-const home = (req, res) => {
+const unfinished = (req, res) => {
     let {id} = req.params;
-    console.log(id)
-    // let password = req.body.password;
-    // let user = {username: `${username}`, password: `${password}`};
     let tasks = `SELECT * FROM tasks WHERE tasks.user_id = '${id}' AND tasks.status_id = 1`
-    // let finished = `SELECT * FROM tasks WHERE tasks.user_id = '${id}' AND tasks.status_id = 2`
     conn.query(tasks, (err, result) => {
         if (err){
             console.log(err)
         }else{
-            // console.log(req.body);
             res.status(200).json(result);
-            console.log(result)
         }
     })
-    // res.json("index");
+}
+
+const finished = (req, res) => {
+    let {id} = req.params;
+    console.log(id)
+    let tasks = `SELECT * FROM tasks WHERE tasks.user_id = '${id}' AND tasks.status_id = 2`
+    conn.query(tasks, (err, result) => {
+        if (err){
+            console.log(err)
+        }else{
+            res.status(200).json(result);
+        }
+    })
 }
 const notifications = (req, res) => {
     res.status(200).json({
         notifications: "notifications"
     })
 }
-const participants = (req, res) => {
-    res.status(200).json({
-        participants: "Participants"
+
+const all_participants = (req, res) => {
+    let all_part = `SELECT users.*, department.name FROM users INNER JOIN department ON users.dep_id = department.id;`
+    conn.query(all_part, (err, result) => {
+        if (err){
+            console.log(err)
+        }else{
+            res.status(200).json(result);
+        }
     })
 }
+
+const dep_participants = (req, res) => {
+    let dep_id = req.params.id
+    console.log(dep_id)
+    let dep_part = `SELECT * FROM users WHERE users.dep_id = ${dep_id};`
+    conn.query(dep_part, (err, result) => {
+        if(err){
+            console.log(err)
+        }else{
+            res.status(200).json(result);
+            console.log(result)
+        }
+    })
+}
+
 const settings = (req, res) => {
     res.status(200).json({
         settings: "Settings"
@@ -52,5 +79,5 @@ const settings = (req, res) => {
 
 // Exporting the function variables
 module.exports = {
-    home, notifications, participants, settings
+    unfinished, finished, notifications, all_participants, dep_participants, settings
 };

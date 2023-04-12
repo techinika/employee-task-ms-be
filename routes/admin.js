@@ -2,6 +2,7 @@ const express = require("express");
 const { home, projects, reports, tasks, settings, add_task } = require("../controllers/admin");
 const router = express.Router();
 
+// Defining Admin routes
 router.route("/").get(home);
 
 router.route("/projects").get(projects);
