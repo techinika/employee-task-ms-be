@@ -34,6 +34,7 @@ const add_task = (req, res) => {
     let title = req.body.title;
     let description = req.body.description;
     let deadline = req.body.deadline;
+    let status = req.body.status;
     let assignee = req.body.assignee;
     conn.query(`SELECT id FROM users WHERE username= '${assignee}'`, (err, result) => {
         if(err){
@@ -48,7 +49,7 @@ const add_task = (req, res) => {
             let user_id = result[0]
             console.log(user_id.id);
             // let newtask = {title: `${title}`, description: `${description}`, deadline:`${deadline}`,dep_id:`${dep_id}`};
-            let sql = `INSERT INTO tasks (title, description, deadline, user_id) values ('${title}', '${description}', '${deadline}', '${dep_id.id}')`
+            let sql = `INSERT INTO tasks (title, description, deadline, status, user_id) values ('${title}', '${description}', '${deadline}', '${status}', '${dep_id.id}')`
             conn.query(sql, (err, result) => {
                 if(err){
                     console.log(err);

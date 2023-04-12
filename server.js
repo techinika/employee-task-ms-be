@@ -11,17 +11,14 @@ app.use(bodyParser.json())
 
 // Basic routing
 app.get("/", (req, res) => {
-    res.render("index");
+    res.status(200).sendFile("index.html");
 })
-app.get("/ems", (req, res) => {
-    res.render("index");
-})
+
+app.use("/ems", require("./routes/employee"))
 
 app.use("/auth", require("./routes/auth_route"));
 app.use("/emp", require("./routes/employee"))
 app.use("/admin", require("./routes/admin"))
-
-app.set('view engine', 'hbs');
 
 //Setting up a server
 const port = 3000;

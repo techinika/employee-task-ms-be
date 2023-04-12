@@ -4,14 +4,14 @@ const router = express.Router();
 
 router.route("/").get(home);
 
-router.route("/projects").post(projects);
+router.route("/projects").get(projects);
 
-router.route("/reports").post(reports);
+router.route("/reports").get(reports);
 
-router.route("/tasks").post(tasks);
+router.route("/tasks").get(tasks);
 
-router.route("/settings").post(settings);
+router.route("/settings").get(settings);
 
-router.route("/add_task").post(add_task);
+router.route("/add_task").get(add_task);
 
 module.exports = router;

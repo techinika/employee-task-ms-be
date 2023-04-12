@@ -1,6 +1,8 @@
 // const express = require("express");
 const bcrypt = require("bcryptjs");
+const path = require("path")
 const mysql = require("mysql");
+
 
 //Creating connection
 const conn = mysql.createConnection({
@@ -23,19 +25,21 @@ const login = (req, res) => {
     let sql = `SELECT * FROM users WHERE username= '${username}' AND password= '${password}'`;
     conn.query(sql, async (err, result) => {
         if(err){
-            res.status(200).render("index", {
+            res.status(200).json({
                 message: "User not found"
             })
         }else if(result < 1){
             console.log("Invalid username or password");
-            res.status(200).render("index", {
+            res.status(200).json({
                 message: "Invalid username or password"
             });
         }else{
             let returned = await result[0];
-            let returned_username = returned.username;
+            let returned_username = await returned.username;
             console.log("Welcome", returned_username)
-            return res.status(200).render("employee/emp_home", {returned});
+            res.status(200).json({
+                returned
+            })
         }
     })
 }
