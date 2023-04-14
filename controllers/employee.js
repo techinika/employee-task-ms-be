@@ -3,11 +3,11 @@ const bcrypt = require("bcryptjs");
 
 //Creating connection
 const conn = mysql.createConnection({
-    host: "localhost",
-    user: "root",
-    password: "",
-    database: "login_signup"
-})
+    host: process.env.LOCAL_HOST,
+    user: process.env.ROOT,
+    password: process.env.PASSWORD,
+    database: process.env.DATABASE
+});
 
 // Connecting to database
 conn.connect((err) => {
