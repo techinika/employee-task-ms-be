@@ -69,7 +69,7 @@ const login = (req, res) => {
     })
 }
 
-//END OF NEW LOGIN 
+//END OF NEW LOGIN AND START OF REGISTER
 const register = async (req, res) => {
     const {firstname, lastname, username, email, password, department} = await req.body;
     const hashed_password = await bcrypt.hash(password, 8)
