@@ -18,35 +18,56 @@ conn.connect((err) => {
 })
 
 // Retrieving Data from database
+// 
+//NEW LOGIN AND CHECK PASSWORD MATCH USING BCRYPTJS
 const login = (req, res) => {
-    // const hashedPassword = '$2a$10$abc123...';
-    // const userPassword = "12345"
+    const username = req.body.username;
+    const password = req.body.password;
 
-
-const username = req.body.username;
-const password = req.body.password;
-
-const user_pass_hashed = bcrypt.hashSync(password,10)
-console.log(user_pass_hashed)
-
-const sql = 'SELECT password FROM users WHERE username = ?';
-conn.query(sql, [username], (err, result) => {
-    if (err) {
-        console.error(err);
-        res.status(500).send('Internal server error');
-    } else if (result.length === 0) {
-        res.status(401).send('Username not found');
-    } else {
-        const hashedPassword = result[0].password;
-        console.log(hashedPassword)
-        const passwordMatch = bcrypt.compareSync(password.trim(), hashedPassword);    
-        if (passwordMatch) {
-            res.send('Login successful');
+    let sql = `SELECT * FROM users WHERE username= '${username}'`;
+    conn.query(sql, async (err, result) => {
+        if (err) {
+            res.status(200).json({
+                error: "User not found"
+            });
+        } else if (!username || !password) {
+            res.status(400).json({
+                error: "All fields must be filled"
+            });
+        } else if (result.length === 0) {
+            console.log("No such user found in database");
+            res.status(200).json({
+                error: "No such user found in database"
+            });
         } else {
-            res.status(401).send('Incorrect password');
+            const { id, firstname, lastname, username, email, password: hashedPassword, dep_id } = result[0];
+            bcrypt.compare(password, hashedPassword, function(err, result) {
+                if(result === true) {
+                    console.log("Welcome", username);
+                    const access_token = jwt.sign({
+                        user: {
+                            id,
+                            firstname,
+                            lastname,
+                            username,
+                            email,
+                            dep_id
+                        },
+                    }, process.env.ACCESS_TOKEN_SECRET,
+                    {
+                        expiresIn: "20m"
+                    });
+                    res.status(200).json({ access_token });
+                } else {
+                    console.log("Invalid password");
+                    res.status(200).json({
+                        error: "Invalid password"
+                    });
+                }
+            });
         }
-    }
-});
+    })
+};
 
   // Compare the user input password to the hashed password
   
@@ -98,11 +119,11 @@ conn.query(sql, [username], (err, result) => {
 //             })
 //         }
 //     })
-}
 
+//END OF NEW LOGIN 
 const register = async (req, res) => {
     const {firstname, lastname, username, email, password, department} = await req.body;
-    const hashed_password = await bcrypt.hashSync(password, 10)
+    const hashed_password = await bcrypt.hash(password, 8)
 
     console.log(firstname, lastname, username, email, password, department)
     conn.query(`SELECT email, username FROM users WHERE username='${username}'`, async (err, result) => {

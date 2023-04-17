@@ -24,7 +24,7 @@ app.use("/auth", require("./routes/auth_route"));
 app.use("/emp", require("./routes/employee"))
 app.use("/admin", require("./routes/admin"))
 
-app.use(err_handler)
+// app.use(err_handler)
 
 //Setting up a server
 const port = process.env.PORT;
