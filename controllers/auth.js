@@ -21,6 +21,7 @@ conn.connect((err) => {
 // 
 //NEW LOGIN AND CHECK PASSWORD MATCH USING BCRYPTJS
 const login = (req, res) => {
+    // My codes
     const username = req.body.username;
     const password = req.body.password;
 
