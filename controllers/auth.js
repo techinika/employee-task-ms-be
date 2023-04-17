@@ -23,46 +23,33 @@ const login = (req, res) => {
     // const userPassword = "12345"
 
 
-    function checkPassword(userPassword, hashedPassword) {
-        bcrypt.compare(userPassword, hashedPassword.toString, function(err, res) {
-          if (err) {
-            console.error('Error comparing passwords:', err);
-            return false;
-          }
-          if (res) {
-            console.log('Passwords match');
-            return true;
-          } else {
-            console.log('Passwords do not match');
-            return false;
-          }
-        });
-      }
-      
-      // Test the function with sample data
-      const userPassword = '12345';
-      const hashedPassword = bcrypt.hash('12345', 8); // Replace with your hashed password
-      const new_password = toString(hashedPassword)
-      console.log(new_password)
-      
-      checkPassword(userPassword, new_password);
+const username = req.body.username;
+const password = req.body.password;
 
-    // conn.query(`SELECT password FROM users WHERE username = ${username}`, function (error, results, fields){
-    //     if(error) throw error;
-    //     const hashed_password = bcrypt.hash("12345", 8);
-    //     // console.log(hashed_password)
+const user_pass_hashed = bcrypt.hashSync(password,10)
+console.log(user_pass_hashed)
 
-    //     bcrypt.compare("12345", hashed_password, function (err,res){
+const sql = 'SELECT password FROM users WHERE username = ?';
+conn.query(sql, [username], (err, result) => {
+    if (err) {
+        console.error(err);
+        res.status(500).send('Internal server error');
+    } else if (result.length === 0) {
+        res.status(401).send('Username not found');
+    } else {
+        const hashedPassword = result[0].password;
+        console.log(hashedPassword)
+        const passwordMatch = bcrypt.compareSync(password.trim(), hashedPassword);    
+        if (passwordMatch) {
+            res.send('Login successful');
+        } else {
+            res.status(401).send('Incorrect password');
+        }
+    }
+});
 
-    //         if(res){
-    //             console.log("Password match");
-    //         }else{
-    //             console.log("password doesn't match");
-    //         }
-    //     })
-    // })
-//     const username = req.body.username;
-//     const password = req.body.password;
+  // Compare the user input password to the hashed password
+  
 
 //     let sql = `SELECT password FROM users WHERE username= '${username}'`;
 //     conn.query(sql, async (err, result) => {
@@ -115,7 +102,7 @@ const login = (req, res) => {
 
 const register = async (req, res) => {
     const {firstname, lastname, username, email, password, department} = await req.body;
-    const hashed_password = await bcrypt.hash(password, 8)
+    const hashed_password = await bcrypt.hashSync(password, 10)
 
     console.log(firstname, lastname, username, email, password, department)
     conn.query(`SELECT email, username FROM users WHERE username='${username}'`, async (err, result) => {
@@ -161,127 +148,6 @@ const register = async (req, res) => {
         }
     })
 
-    // conn.query(`SELECT username FROM users WHERE username= '${username}'`, (err, result) => {
-    //     if(err){
-    //         console.log(err)
-    //     }else if(result.length > 0){
-    //         res.status(400).json({
-    //             message: "Username already in use"
-    //         });
-    //     }
-    // });
-
-    // conn.query(`SELECT id FROM department WHERE name= '${department}'`, (err, result) => {
-    //     if(err){
-    //         console.log(err)
-    //     }else if(result){
-    //         console.log(result[0].id)
-    //         const dep_id = result[0].id
-    //         conn.query(`INSERT INTO users (firstname, lastname, username, email, password, dep_id) VALUES ('${firstname}', '${lastname}', '${username}', '${email}', '${hashed_password}', '${dep_id}')`, (err, result) => {
-    //             if(err){
-    //                 console.log(err)
-    //             }else{
-    //                 res.status(200).json({
-    //                     message: "User registered"
-    //                 })
-    //             }
-    //         })
-    //     }else{
-    //         res.status(400).json({
-    //             error: "No such department in database"
-    //         })
-    //     }
-    //     // const dep_id = result[0].id;
-    //     // module.exports = dep_id;
-    //     // return(result[0].id)
-    // })
-    
-    // conn.query(`INSERT INTO users (firstname, lastname, username, email, password, dep_id) VALUES ('${firstname}', '${lastname}', '${username}', '${email}', '${hashed_password}', '${dep_id}')`, (err, result) => {
-    //     if(err){
-    //         console.log(err)
-    //     }else{
-    //         res.status(200).json({
-    //             message: "User registered"
-    //         })
-    //     }
-    // })
-
-    // const username_exists = await conn.query(`SELECT username FROM users WHERE username= '${username}'`, (err,result) => {
-    //     if(result){
-    //         console.log(result[0].username);
-    //     }
-    //     return (result[0].username)
-    // })
-    // const {dep_exists} = await conn.query(`SELECT id FROM department WHERE name= '${department}'`, (err, result) => {
-    //     if(err){
-    //         console.log(err)
-    //     }
-    //     if(result[0].id < 1){
-    //         res.status(400).json({
-    //             error: "No such department found"
-    //         })
-    //         return
-    //     }else{
-    //         console.log(result[0].id)
-    //         return result[0].id
-    //     }
-        
-    // })
-    // // const dep_id = department_id[0];
-    // // const dep_id = dep_exists
-    // console.log(dep_exists)
-    // const new_user = {
-    //     firstname: firstname, 
-    //     lastname: lastname, 
-    //     username: username, 
-    //     email: email, 
-    //     password: hashed_password, 
-    //     dep_id: department
-    // }
-    // // console.log()
-    // if(!firstname || !lastname || !username || !email || !password || !department){
-    //     res.status(400).json({error: "All fields must be filled"})
-    // }else if(email_exists > 0){
-    //     res.status(400).json({error: "Email already exists"})
-    // }else if(username_exists > 0){
-    //     res.status(400).json({error: "Username already exists"})
-    // }else{
-    //     conn.query(`SELECT id FROM department WHERE name= '${department}'`, (err, result) => {
-    //         if(err){
-    //             console.log(err)
-    //         }else if(result < 1){
-    //             console.log("User not found");
-    //             res.json({
-    //                 message: "Department not found"
-    //             })
-    //         }else{
-    //             // let dep_id = result[0]
-    //             const dep_id = result[0].id
-    //             console.log(dep_id);
-    //             let sql = `INSERT INTO users (firstname, lastname, username, email, password, dep_id) VALUES ('${firstname}', '${lastname}', '${username}', '${email}', '${hashed_password}', '${dep_id}')`
-    //             conn.query(sql, (err, result) => {
-    //                 if(err){
-    //                     console.log(err);
-    //                     // console.log(req.body);
-    //                 }else{
-    //                     res.status(200).json({
-    //                         message: "User registered successfully"
-    //                     })
-    //                 }
-    //             })
-    //         }
-    //     })
-        // conn.query(`INSERT INTO users (firstname, lastname, username, email, password, dep_id) VALUES ('${firstname}', '${lastname}', '${username}', '${email}', '${hashed_password}', '${dep_id}'`, (err, result) => {
-        //     if(err){
-        //         console.log(err)
-        //     }else{
-        //         res.status(200).json({
-        //             message: "User registered successfully"
-        //         })
-        //     }
-        // })
-        // res.status(200).json({message: "User registered dsuccessfully"})
-    // }
 }
 module.exports = {
     login,
