@@ -18,7 +18,7 @@ dotenv.config()
 app.get("/", (req, res) => {
     res.status(200).sendFile("index.html");
 })
-
+//NO middleware
 app.use("/ems", require("./routes/employee"))
 
 app.use("/auth", require("./routes/auth_route"));
