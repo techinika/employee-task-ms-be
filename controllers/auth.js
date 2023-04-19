@@ -2,6 +2,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken")
 const path = require("path")
 const mysql = require("mysql");
+const requser = require("../middleware/validate_token");
 
 
 //Creating connection
@@ -27,6 +28,8 @@ const login = (req, res) => {
 
     let sql = `SELECT * FROM users WHERE username= '${username}'`;
     conn.query(sql, async (err, result) => {
+        const user_details = result.user
+        console.log(result)
         if (err) {
             res.status(200).json({
                 error: "User not found"
@@ -45,6 +48,7 @@ const login = (req, res) => {
             bcrypt.compare(password, hashedPassword, function(err, result) {
                 if(result === true) {
                     console.log("Welcome", username);
+                    
                     const access_token = jwt.sign({
                         user: {
                             id,
@@ -56,9 +60,12 @@ const login = (req, res) => {
                         },
                     }, process.env.ACCESS_TOKEN_SECRET,
                     {
-                        expiresIn: "20m"
+                        expiresIn: "200m"
                     });
-                    res.status(200).json({ access_token });
+                    // console.log(req.user)
+                    res.status(200).json({ 
+                        token: access_token
+                    })
                 } else {
                     console.log("Invalid password");
                     res.status(200).json({
@@ -123,97 +130,7 @@ const register = async (req, res) => {
                 error: "No such department in database"
             })
         }
-        // const dep_id = result[0].id;
-        // module.exports = dep_id;
-        // return(result[0].id)
     })
-    
-    // conn.query(`INSERT INTO users (firstname, lastname, username, email, password, dep_id) VALUES ('${firstname}', '${lastname}', '${username}', '${email}', '${hashed_password}', '${dep_id}')`, (err, result) => {
-    //     if(err){
-    //         console.log(err)
-    //     }else{
-    //         res.status(200).json({
-    //             message: "User registered"
-    //         })
-    //     }
-    // })
-
-    // const username_exists = await conn.query(`SELECT username FROM users WHERE username= '${username}'`, (err,result) => {
-    //     if(result){
-    //         console.log(result[0].username);
-    //     }
-    //     return (result[0].username)
-    // })
-    // const {dep_exists} = await conn.query(`SELECT id FROM department WHERE name= '${department}'`, (err, result) => {
-    //     if(err){
-    //         console.log(err)
-    //     }
-    //     if(result[0].id < 1){
-    //         res.status(400).json({
-    //             error: "No such department found"
-    //         })
-    //         return
-    //     }else{
-    //         console.log(result[0].id)
-    //         return result[0].id
-    //     }
-        
-    // })
-    // // const dep_id = department_id[0];
-    // // const dep_id = dep_exists
-    // console.log(dep_exists)
-    // const new_user = {
-    //     firstname: firstname, 
-    //     lastname: lastname, 
-    //     username: username, 
-    //     email: email, 
-    //     password: hashed_password, 
-    //     dep_id: department
-    // }
-    // // console.log()
-    // if(!firstname || !lastname || !username || !email || !password || !department){
-    //     res.status(400).json({error: "All fields must be filled"})
-    // }else if(email_exists > 0){
-    //     res.status(400).json({error: "Email already exists"})
-    // }else if(username_exists > 0){
-    //     res.status(400).json({error: "Username already exists"})
-    // }else{
-    //     conn.query(`SELECT id FROM department WHERE name= '${department}'`, (err, result) => {
-    //         if(err){
-    //             console.log(err)
-    //         }else if(result < 1){
-    //             console.log("User not found");
-    //             res.json({
-    //                 message: "Department not found"
-    //             })
-    //         }else{
-    //             // let dep_id = result[0]
-    //             const dep_id = result[0].id
-    //             console.log(dep_id);
-    //             let sql = `INSERT INTO users (firstname, lastname, username, email, password, dep_id) VALUES ('${firstname}', '${lastname}', '${username}', '${email}', '${hashed_password}', '${dep_id}')`
-    //             conn.query(sql, (err, result) => {
-    //                 if(err){
-    //                     console.log(err);
-    //                     // console.log(req.body);
-    //                 }else{
-    //                     res.status(200).json({
-    //                         message: "User registered successfully"
-    //                     })
-    //                 }
-    //             })
-    //         }
-    //     })
-        // conn.query(`INSERT INTO users (firstname, lastname, username, email, password, dep_id) VALUES ('${firstname}', '${lastname}', '${username}', '${email}', '${hashed_password}', '${dep_id}'`, (err, result) => {
-        //     if(err){
-        //         console.log(err)
-        //     }else{
-        //         res.status(200).json({
-        //             message: "User registered successfully"
-        //         })
-        //     }
-        // })
-        // res.status(200).json({message: "User registered dsuccessfully"})
-    // }
 }
 module.exports = {
     login,

@@ -8,16 +8,18 @@ const {
     dep_participants,
     settings,
 } = require("../controllers/employee");
+const validate_token = require("../middleware/validate_token");
 
 const router = express.Router();
+router.use(validate_token)
 
 // Defining routes on ems/
-router.route("/home/unfinished/:id").get(unfinished);
-router.route("/home/finished/:id").get(finished)
-router.route("/notifications").get(notifications);
-router.route("/participants").get(all_participants);
-router.route("/participants/:id").get(dep_participants);
-router.route("/settings").put(settings);
+router.get("/home/unfinished/:id", unfinished);
+router.get("/home/finished/:id", finished)
+router.get("/notifications", notifications);
+router.get("/participants", all_participants);
+router.get("/participants/:id", dep_participants);
+router.put("/settings", settings);
 
 // Exporting area
 module.exports = router;

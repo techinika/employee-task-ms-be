@@ -36,23 +36,26 @@ const finished = (req, res) => {
         if (err){
             console.log(err)
         }else{
-            res.status(200).json(result);
+            res.status(200).json({user_details: req.user, finished: result});
         }
     })
 }
 const notifications = (req, res) => {
     res.status(200).json({
+        user_details: req.user,
         notifications: "notifications"
     })
 }
 
 const all_participants = (req, res) => {
+    // console.log(req.user)
+    console.log("All participants")
     let all_part = `SELECT users.*, department.name FROM users INNER JOIN department ON users.dep_id = department.id;`
     conn.query(all_part, (err, result) => {
         if (err){
             console.log(err)
         }else{
-            res.status(200).json(result);
+            res.status(200).json({user_details: req.user, participants: result});
         }
     })
 }
@@ -65,7 +68,7 @@ const dep_participants = (req, res) => {
         if(err){
             console.log(err)
         }else{
-            res.status(200).json(result);
+            res.status(200).json({user_details: req.user, dep_participants: result});
             console.log(result)
         }
     })
@@ -73,6 +76,7 @@ const dep_participants = (req, res) => {
 
 const settings = (req, res) => {
     res.status(200).json({
+        user_details: req.user,
         settings: "Settings"
     })
 }
