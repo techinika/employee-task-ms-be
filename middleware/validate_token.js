@@ -15,9 +15,9 @@ const validate_token = async_handler(async(req, res, next) => {
                     error: "User is not authorised"
                 })
             }
-            // requser = decoded.user;
-            // next();
-            console.log(decoded)
+            req.user = decoded.user;
+            next();
+            // console.log(decoded)
         })
     }else{
         res.status(401).json({error: "User not authorised, or missing token"})

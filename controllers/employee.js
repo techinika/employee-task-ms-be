@@ -1,5 +1,6 @@
 const mysql = require("mysql");
 const bcrypt = require("bcryptjs");
+const { literal } = require("sequelize");
 
 //Creating connection
 const conn = mysql.createConnection({
@@ -23,7 +24,10 @@ const unfinished = (req, res) => {
         if (err){
             console.log(err)
         }else{
-            res.status(200).json(result);
+            res.status(200).json({
+                user_details: req.user,
+                unfinished: result
+            });
         }
     })
 }
@@ -40,6 +44,30 @@ const finished = (req, res) => {
         }
     })
 }
+
+const update = (req,res) => {
+    let task_id = req.params.id;
+    console.log(task_id)
+    let status_id = req.body.status_id
+    if(status_id == 1){
+        conn.query(`UPDATE tasks SET status_id='2' WHERE task_id = ${task_id}`, (err, result) => {
+            if (err){
+                res.status(200).json({ error: err})
+            }else{
+                res.status(200).json({ new_id: '2'})
+            }
+        })
+    }else{
+        conn.query(`UPDATE tasks SET status_id='1' WHERE task_id = ${task_id}`, (err, result) => {
+            if (err){
+                res.status(200).json({ error: err})
+            }else{
+                res.status(200).json({ new_id: '1'})
+            }
+        })
+    }
+}
+
 const notifications = (req, res) => {
     res.status(200).json({
         user_details: req.user,
@@ -83,5 +111,5 @@ const settings = (req, res) => {
 
 // Exporting the function variables
 module.exports = {
-    unfinished, finished, notifications, all_participants, dep_participants, settings
+    unfinished, finished, update, notifications, all_participants, dep_participants, settings
 };
