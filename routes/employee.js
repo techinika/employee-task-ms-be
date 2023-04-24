@@ -8,6 +8,7 @@ const {
     all_participants,
     dep_participants,
     settings,
+    add_task,
 } = require("../controllers/employee");
 const validate_token = require("../middleware/validate_token");
 
@@ -17,6 +18,7 @@ router.use(validate_token)
 // Defining routes on ems/
 router.get("/home/unfinished/:id", unfinished);
 router.get("/home/finished/:id", finished)
+router.post("/home/add_task", add_task)
 router.post("/home/update/:id", update)
 router.get("/notifications", notifications);
 router.get("/participants", all_participants);

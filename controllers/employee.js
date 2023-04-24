@@ -45,6 +45,37 @@ const finished = (req, res) => {
     })
 }
 
+const add_task = (req, res) => {
+    let title = req.body.title;
+    let description = req.body.description;
+    let deadline = req.body.deadline;
+    let status = "1";
+    let assignee = req.body.assignee;
+    conn.query(`SELECT id FROM users WHERE username= '${assignee}'`, (err, result) => {
+        if(err){
+            console.log(err)
+            res.status(200).json({error: err})
+        }else if(result.length < 1){
+            console.log("User not found");
+            res.status(400).json({
+                error: "user not found"
+            })
+        }else{
+            let user_id = result[0]
+            console.log(user_id.id);
+            let sql = `INSERT INTO tasks (title, description, deadline, status_id, user_id) values ('${title}', '${description}', '${deadline}', '${status}', '${user_id.id}')`
+            conn.query(sql, (err, result) => {
+                if(err){
+                    console.log(err);
+                    console.log(req.body);
+                }else{
+                    res.status(200).json({message: "Task added"});
+                }
+            })
+        }
+    })
+}
+
 const update = (req,res) => {
     let task_id = req.params.id;
     console.log(task_id)
@@ -91,7 +122,7 @@ const all_participants = (req, res) => {
 const dep_participants = (req, res) => {
     let dep_id = req.params.id
     console.log(dep_id)
-    let dep_part = `SELECT * FROM users WHERE users.dep_id = ${dep_id};`
+    let dep_part = `SELECT * FROM users WHERE dep_id = ${dep_id};`
     conn.query(dep_part, (err, result) => {
         if(err){
             console.log(err)
@@ -111,5 +142,5 @@ const settings = (req, res) => {
 
 // Exporting the function variables
 module.exports = {
-    unfinished, finished, update, notifications, all_participants, dep_participants, settings
+    unfinished, finished, add_task, update, notifications, all_participants, dep_participants, settings
 };

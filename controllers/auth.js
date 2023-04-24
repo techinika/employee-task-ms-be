@@ -65,7 +65,8 @@ const login = (req, res) => {
                     // console.log(req.user)
                     res.status(200).json({ 
                         token: access_token,
-                        id: id
+                        id: dep_id,
+                        user_id: id
                     })
                 } else {
                     console.log("Invalid password");
