@@ -19,7 +19,10 @@ dotenv.config()
 // Basic routing
 app.get("/", (req, res) => {
     try {
-        res.status(200).send("Home route")
+        res.status(200).json({
+            wlecome: "Home route",
+            message: "API application for Employee MS"
+        })
     }catch (err){
         console.log(err)
     }
