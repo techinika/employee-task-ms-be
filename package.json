@@ -5,7 +5,8 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js",
+    "start": "netlify-lambda serve src",
+    "build": "netlify-lambda build src",
     "dev": "nodemon server.js"
   },
   "repository": {
@@ -31,6 +32,7 @@
     "nodemon": "^2.0.22",
     "package.json": "^2.0.1",
     "sequelize": "^6.31.0",
-    "sequelize-cli": "^6.6.0"
+    "sequelize-cli": "^6.6.0",
+    "serverless-http": "^3.2.0"
   }
 }

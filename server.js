@@ -1,7 +1,7 @@
 const express = require("express");
 const app = express();
 const cors = require("cors")
-const path = require("path");
+const serverless = require("serverless-http")
 const bodyParser = require("body-parser");
 const { Console } = require("console");
 // const validate_token = require("./middleware/validate_token");
@@ -39,3 +39,7 @@ app.listen(port, (err) => {
     if(err) console.log(err);
     console.log(`Server running on port ${port}...`);
 })
+
+// app.use('/.netlify/functions/api')
+// module.exports.handler = serverless(app)
+module.exports = app;

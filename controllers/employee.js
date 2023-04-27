@@ -93,10 +93,37 @@ const update = (req,res) => {
             if (err){
                 res.status(200).json({ error: err})
             }else{
-                res.status(200).json({ new_id: '1'})
+                res.status(200).json({ 
+                    message: "Task updated",
+                    new_id: '1'})
             }
         })
     }
+}
+
+const remove_task = (req, res) => {
+    const id = req.params.id
+    conn.query(`SELECT task_id FROM tasks WHERE task_id = ${id}`, (err, result) => {
+        if(err){
+            res.status(200).json({
+                error: "Error occured"
+            })
+        }else if(result.length < 1){
+            res.status(400).json({
+                error: "Task not found"
+            })
+        }else{
+            conn.query(`DELETE FROM tasks WHERE task_id = ${id}`, (err, result) => {
+                if(err){
+                    console.log(err)
+                }else{
+                    res.status(200).json({
+                        message: "Task deleted"
+                    })
+                }
+            })
+        }
+    })
 }
 
 const notifications = (req, res) => {
@@ -142,5 +169,5 @@ const settings = (req, res) => {
 
 // Exporting the function variables
 module.exports = {
-    unfinished, finished, add_task, update, notifications, all_participants, dep_participants, settings
+    unfinished, finished, add_task, update, remove_task, notifications, all_participants, dep_participants, settings
 };

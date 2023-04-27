@@ -4,6 +4,7 @@ const {
     unfinished,
     finished,
     update,
+    remove_task,
     notifications,
     all_participants,
     dep_participants,
@@ -16,14 +17,15 @@ const router = express.Router();
 router.use(validate_token)
 
 // Defining routes on ems/
-router.get("/home/unfinished/:id", unfinished);
+router.get("/home/unfinished/:id", unfinished)
 router.get("/home/finished/:id", finished)
 router.post("/home/add_task", add_task)
 router.post("/home/update/:id", update)
-router.get("/notifications", notifications);
-router.get("/participants", all_participants);
-router.get("/participants/:id", dep_participants);
-router.get("/settings", settings);
+router.get("/home/delete/:id", remove_task)
+router.get("/notifications", notifications)
+router.get("/participants", all_participants)
+router.get("/participants/:id", dep_participants)
+router.get("/settings", settings)
 
 // Exporting area
 module.exports = router;

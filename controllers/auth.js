@@ -63,10 +63,19 @@ const login = (req, res) => {
                         expiresIn: "200m"
                     });
                     // console.log(req.user)
-                    res.status(200).json({ 
-                        token: access_token,
-                        id: dep_id,
-                        user_id: id
+                    conn.query(`SELECT name FROM department WHERE id = ${dep_id}`, (err, results) => {
+                        const returned = results[0]
+                        const returned_department = returned.name
+                        if(err){
+                            console.log(err)
+                        }else{
+                            res.status(200).json({ 
+                                token: access_token,
+                                id: dep_id,
+                                user_id: id,
+                                department: returned_department 
+                            })
+                        }
                     })
                 } else {
                     console.log("Invalid password");
@@ -116,8 +125,9 @@ const register = async (req, res) => {
         if(err){
             console.log(err)
         }else if(result){
-            console.log(result[0].id)
-            const dep_id = result[0].id
+            console.log(result[0])
+            const returned = result[0]
+            const dep_id = returned.id
             conn.query(`INSERT INTO users (firstname, lastname, username, email, password, dep_id) VALUES ('${firstname}', '${lastname}', '${username}', '${email}', '${hashed_password}', '${dep_id}')`, (err, result) => {
                 if(err){
                     console.log(err)
